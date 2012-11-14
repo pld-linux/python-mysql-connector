@@ -7,7 +7,7 @@
 Summary:	The MySQL Client/Protocol implemented in Python
 Name:		python-%{pname}
 Version:	1.0.7
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Libraries/Python
 Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}.zip
