@@ -6,12 +6,12 @@
 %define		pname	mysql-connector
 Summary:	The MySQL Client/Protocol implemented in Python
 Name:		python-%{pname}
-Version:	1.0.9
+Version:	1.0.10
 Release:	1
 License:	GPL v2
 Group:		Libraries/Python
 Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}.zip
-# Source0-md5:	f3feb860064e2889a069a26239fe8857
+# Source0-md5:	e4520846799e92bf224908c31f4bd74f
 URL:		http://dev.mysql.com/doc/connector-python/en/
 BuildRequires:	python-modules
 %{?with_python3:BuildRequires:	python3-modules}
