@@ -8,11 +8,13 @@ Summary:	The MySQL Client/Protocol implemented in Python
 Name:		python-%{pname}
 # check documentation to see which version is GA (we don't want devel releases)
 Version:	1.1.6
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Libraries/Python
 Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}.zip
 # Source0-md5:	026e4a4b8731da33d73f0542349594fd
+# drop after python connector >= 1.2.1
+Patch0:		%{name}-ssl.patch
 URL:		http://dev.mysql.com/doc/connector-python/en/
 BuildRequires:	python-modules
 %{?with_python3:BuildRequires:	python3-modules}
@@ -40,6 +42,7 @@ driver. An interface to the popular MySQL database server for Python.
 
 %prep
 %setup -q -n mysql-connector-python-%{version}
+%patch0 -p1
 
 %build
 %{__python} setup.py build
