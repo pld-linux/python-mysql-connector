@@ -6,17 +6,18 @@
 %define		pname	mysql-connector
 Summary:	The MySQL Client/Protocol implemented in Python
 Name:		python-%{pname}
-Version:	1.0.10
+# check documentation to see which version is GA (we don't want devel releases)
+Version:	1.1.6
 Release:	1
 License:	GPL v2
 Group:		Libraries/Python
 Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}.zip
-# Source0-md5:	e4520846799e92bf224908c31f4bd74f
+# Source0-md5:	026e4a4b8731da33d73f0542349594fd
 URL:		http://dev.mysql.com/doc/connector-python/en/
 BuildRequires:	python-modules
 %{?with_python3:BuildRequires:	python3-modules}
 BuildRequires:	rpm-pythonprov
-%pyrequires_eq	python-modules
+Requires:	python-modules
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -29,7 +30,7 @@ driver. An interface to the popular MySQL database server for Python.
 %package -n python3-%{pname}
 Summary:	The MySQL Client/Protocol implemented in Python
 Group:		Development/Languages/Python
-%pyrequires_eq	python3-modules
+Requires:	python3-modules
 
 %description -n python3-%{pname}
 MySQL Connector/Python is implementing the MySQL Client/Server
@@ -77,6 +78,8 @@ rm -rf $RPM_BUILD_ROOT
 %{py_sitescriptdir}/mysql/*.py[co]
 %dir %{py_sitescriptdir}/mysql/connector
 %{py_sitescriptdir}/mysql/connector/*.py[co]
+%dir %{py_sitescriptdir}/mysql/connector/django
+%{py_sitescriptdir}/mysql/connector/django/*.py[co]
 %dir %{py_sitescriptdir}/mysql/connector/locales
 %{py_sitescriptdir}/mysql/connector/locales/*.py[co]
 %dir %{py_sitescriptdir}/mysql/connector/locales/eng
@@ -98,6 +101,10 @@ rm -rf $RPM_BUILD_ROOT
 %{py3_sitescriptdir}/mysql/connector/*.py
 %dir %{py3_sitescriptdir}/mysql/connector/__pycache__
 %{py3_sitescriptdir}/mysql/connector/__pycache__/*.py[co]
+%dir %{py3_sitescriptdir}/mysql/connector/django
+%{py3_sitescriptdir}/mysql/connector/django/*.py
+%dir %{py3_sitescriptdir}/mysql/connector/django/__pycache__
+%{py3_sitescriptdir}/mysql/connector/django/__pycache__/*.py[co]
 %dir %{py3_sitescriptdir}/mysql/connector/locales
 %{py3_sitescriptdir}/mysql/connector/locales/*.py
 %dir %{py3_sitescriptdir}/mysql/connector/locales/__pycache__
