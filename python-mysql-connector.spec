@@ -7,14 +7,12 @@
 Summary:	The MySQL Client/Protocol implemented in Python
 Name:		python-%{pname}
 # check documentation to see which version is GA (we don't want devel releases)
-Version:	1.1.7
+Version:	1.2.2
 Release:	1
 License:	GPL v2
 Group:		Libraries/Python
 Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}.zip
-# Source0-md5:	f5bf75bb9551e523dc6db369b236c6a3
-# drop after python connector >= 1.2.1
-Patch0:		%{name}-ssl.patch
+# Source0-md5:	1459adcda19858629585d356ef481180
 URL:		http://dev.mysql.com/doc/connector-python/en/
 BuildRequires:	python-modules
 %{?with_python3:BuildRequires:	python3-modules}
@@ -42,7 +40,6 @@ driver. An interface to the popular MySQL database server for Python.
 
 %prep
 %setup -q -n mysql-connector-python-%{version}
-%patch0 -p1
 
 %build
 %{__python} setup.py build
@@ -83,6 +80,8 @@ rm -rf $RPM_BUILD_ROOT
 %{py_sitescriptdir}/mysql/connector/*.py[co]
 %dir %{py_sitescriptdir}/mysql/connector/django
 %{py_sitescriptdir}/mysql/connector/django/*.py[co]
+%dir %{py_sitescriptdir}/mysql/connector/fabric
+%{py_sitescriptdir}/mysql/connector/fabric/*.py[co]
 %dir %{py_sitescriptdir}/mysql/connector/locales
 %{py_sitescriptdir}/mysql/connector/locales/*.py[co]
 %dir %{py_sitescriptdir}/mysql/connector/locales/eng
@@ -108,6 +107,10 @@ rm -rf $RPM_BUILD_ROOT
 %{py3_sitescriptdir}/mysql/connector/django/*.py
 %dir %{py3_sitescriptdir}/mysql/connector/django/__pycache__
 %{py3_sitescriptdir}/mysql/connector/django/__pycache__/*.py[co]
+%dir %{py3_sitescriptdir}/mysql/connector/fabric
+%{py3_sitescriptdir}/mysql/connector/fabric/*.py
+%dir %{py3_sitescriptdir}/mysql/connector/fabric/__pycache__
+%{py3_sitescriptdir}/mysql/connector/fabric/__pycache__/*.py[co]
 %dir %{py3_sitescriptdir}/mysql/connector/locales
 %{py3_sitescriptdir}/mysql/connector/locales/*.py
 %dir %{py3_sitescriptdir}/mysql/connector/locales/__pycache__
