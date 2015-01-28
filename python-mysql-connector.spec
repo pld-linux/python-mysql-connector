@@ -7,12 +7,12 @@
 Summary:	The MySQL Client/Protocol implemented in Python
 Name:		python-%{pname}
 # check documentation to see which version is GA (we don't want devel releases)
-Version:	1.2.3
-Release:	2
+Version:	2.0.3
+Release:	1
 License:	GPL v2
 Group:		Libraries/Python
 Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}.zip
-# Source0-md5:	6d42998cfec6e85b902d4ffa5a35ce86
+# Source0-md5:	9fda73a7f69e769e6a545c98b6739514
 URL:		http://dev.mysql.com/doc/connector-python/en/
 BuildRequires:	python-modules
 %{?with_python3:BuildRequires:	python3-modules}
@@ -73,7 +73,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog README
+%doc CHANGES.txt README.txt
 %dir %{py_sitescriptdir}/mysql
 %{py_sitescriptdir}/mysql/*.py[co]
 %dir %{py_sitescriptdir}/mysql/connector
@@ -93,7 +93,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with python3}
 %files -n python3-%{pname}
 %defattr(644,root,root,755)
-%doc ChangeLog README
+%doc CHANGES.txt README.txt
 %{py3_sitescriptdir}/mysql*.egg-info
 %dir %{py3_sitescriptdir}/mysql
 %{py3_sitescriptdir}/mysql/*.py
