@@ -16,6 +16,7 @@ License:	GPL v2
 Group:		Libraries/Python
 Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}.zip
 # Source0-md5:	710479afc4f7895207c8f96f91eb5385
+Patch0:		32bit.patch
 URL:		http://dev.mysql.com/doc/connector-python/en/
 BuildRequires:	mysql-devel
 BuildRequires:	python-devel
@@ -44,6 +45,7 @@ driver. An interface to the popular MySQL database server for Python.
 
 %prep
 %setup -q -n mysql-connector-python-%{version}
+%patch0 -p1
 
 %build
 %{__python} setup.py build
