@@ -48,11 +48,11 @@ driver. An interface to the popular MySQL database server for Python.
 %patch0 -p1
 
 %build
-%{__python} setup.py build
+%py_build
 %{?with_tests:%{__python} setup.py test}
 
 %if %{with python3}
-%{__python3} setup.py build -b build-3
+%py3_build
 %{?with_tests:%{__python3} setup.py test}
 %endif
 
