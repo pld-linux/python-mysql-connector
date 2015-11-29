@@ -18,6 +18,7 @@ Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-
 # Source0-md5:	710479afc4f7895207c8f96f91eb5385
 Patch0:		32bit.patch
 URL:		http://dev.mysql.com/doc/connector-python/en/
+BuildRequires:	rpmbuild(macros) >= 1.710
 BuildRequires:	mysql-devel
 BuildRequires:	python-devel
 BuildRequires:	python-modules
