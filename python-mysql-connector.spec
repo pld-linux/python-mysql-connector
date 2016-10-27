@@ -10,12 +10,12 @@ Summary:	The MySQL Client/Protocol implemented in Python
 Name:		python-%{pname}
 # check documentation to see which version is GA (we don't want devel releases)
 # https://dev.mysql.com/downloads/connector/python/
-Version:	2.1.3
-Release:	3
+Version:	2.1.4
+Release:	1
 License:	GPL v2
 Group:		Libraries/Python
 Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}.zip
-# Source0-md5:	710479afc4f7895207c8f96f91eb5385
+# Source0-md5:	b72723de120b83898a179d57b0b32e0c
 Patch0:		32bit.patch
 URL:		http://dev.mysql.com/doc/connector-python/en/
 BuildRequires:	rpmbuild(macros) >= 1.710
@@ -60,21 +60,13 @@ driver. An interface to the popular MySQL database server for Python.
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__python} -- setup.py \
-	install \
-	--with-mysql-capi=%{_prefix} \
-	--root=$RPM_BUILD_ROOT \
-	--optimize=2
-
+%py_install \
+	--with-mysql-capi=%{_prefix}
 %py_postclean
 
 %if %{with python3}
-%{__python3} -- setup.py \
-	build -b build-3 \
-	install \
-	--with-mysql-capi=%{_prefix} \
-	--root=$RPM_BUILD_ROOT \
-	--optimize=2
+%py3_install \
+	--with-mysql-capi=%{_prefix}
 %endif
 
 %clean
