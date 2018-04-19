@@ -10,12 +10,12 @@ Summary:	The MySQL Client/Protocol implemented in Python
 Name:		python-%{pname}
 # check documentation to see which version is GA (we don't want devel releases)
 # https://dev.mysql.com/downloads/connector/python/
-Version:	2.1.7
-Release:	2
+Version:	8.0.11
+Release:	1
 License:	GPL v2
 Group:		Libraries/Python
 Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}.zip
-# Source0-md5:	6e3f27535ab4390717f29583ed3249cd
+# Source0-md5:	d47704b39d794b287d146c3d772ab896
 Patch0:		32bit.patch
 URL:		http://dev.mysql.com/doc/connector-python/en/
 BuildRequires:	rpmbuild(macros) >= 1.710
@@ -88,6 +88,14 @@ rm -rf $RPM_BUILD_ROOT
 %{py_sitedir}/mysql/connector/locales/*.py[co]
 %dir %{py_sitedir}/mysql/connector/locales/eng
 %{py_sitedir}/mysql/connector/locales/eng/*.py[co]
+%dir %{py_sitedir}/mysqlx
+%{py_sitedir}/mysqlx/*.py[co]
+%dir %{py_sitedir}/mysqlx/protobuf
+%{py_sitedir}/mysqlx/protobuf/*.py[co]
+%dir %{py_sitedir}/mysqlx/locales
+%{py_sitedir}/mysqlx/locales/*.py[co]
+%dir %{py_sitedir}/mysqlx/locales/eng
+%{py_sitedir}/mysqlx/locales/eng/*.py[co]
 %if "%{py_ver}" > "2.4"
 %{py_sitedir}/mysql_connector_python-*.egg-info
 %endif
@@ -122,4 +130,20 @@ rm -rf $RPM_BUILD_ROOT
 %{py3_sitedir}/mysql/connector/locales/eng/*.py
 %dir %{py3_sitedir}/mysql/connector/locales/eng/__pycache__
 %{py3_sitedir}/mysql/connector/locales/eng/__pycache__/*.py[co]
+%dir %{py3_sitedir}/mysqlx
+%{py3_sitedir}/mysqlx/*.py
+%dir %{py3_sitedir}/mysqlx/__pycache__
+%{py3_sitedir}/mysqlx/__pycache__/*.py[co]
+%dir %{py3_sitedir}/mysqlx/locales
+%{py3_sitedir}/mysqlx/locales/*.py
+%dir %{py3_sitedir}/mysqlx/locales/__pycache__
+%{py3_sitedir}/mysqlx/locales/__pycache__/*.py[co]
+%dir %{py3_sitedir}/mysqlx/locales/eng
+%{py3_sitedir}/mysqlx/locales/eng/*.py
+%dir %{py3_sitedir}/mysqlx/locales/eng/__pycache__
+%{py3_sitedir}/mysqlx/locales/eng/__pycache__/*.py[co]
+%dir %{py3_sitedir}/mysqlx/protobuf
+%{py3_sitedir}/mysqlx/protobuf/*.py
+%dir %{py3_sitedir}/mysqlx/protobuf/__pycache__
+%{py3_sitedir}/mysqlx/protobuf/__pycache__/*.py[co]
 %endif
