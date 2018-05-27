@@ -18,12 +18,13 @@ Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-
 # Source0-md5:	d47704b39d794b287d146c3d772ab896
 Patch0:		32bit.patch
 URL:		http://dev.mysql.com/doc/connector-python/en/
-BuildRequires:	rpmbuild(macros) >= 1.710
 BuildRequires:	mysql-devel
+BuildRequires:	protobuf-devel
 BuildRequires:	python-devel
 BuildRequires:	python-modules
 %{?with_python3:BuildRequires:	python3-modules}
 BuildRequires:	rpm-pythonprov
+BuildRequires:	rpmbuild(macros) >= 1.710
 Requires:	python-modules
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -49,6 +50,10 @@ driver. An interface to the popular MySQL database server for Python.
 %patch0 -p1
 
 %build
+export MYSQLXPB_PROTOC=%{_bindir}/protoc
+export MYSQLXPB_PROTOBUF_INCLUDE_DIR=%{_includedir}
+export MYSQLXPB_PROTOBUF_LIB_DIR=%{_libdir}
+
 %py_build
 %{?with_tests:%{__python} setup.py test}
 
@@ -59,6 +64,11 @@ driver. An interface to the popular MySQL database server for Python.
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
+# see NOTE on beginning of the spec
+export MYSQLXPB_PROTOC=%{_bindir}/protoc
+export MYSQLXPB_PROTOBUF_INCLUDE_DIR=%{_includedir}
+export MYSQLXPB_PROTOBUF_LIB_DIR=%{_libdir}
 
 %py_install \
 	--with-mysql-capi=%{_prefix}
