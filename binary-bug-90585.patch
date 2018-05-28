@@ -1,0 +1,20 @@
+--- mysql-connector-python-8.0.11/src/mysql_capi_conversion.c~	2018-04-10 14:35:30.000000000 +0200
++++ mysql-connector-python-8.0.11/src/mysql_capi_conversion.c	2018-05-28 08:13:02.693638891 +0200
+@@ -734,7 +734,7 @@ pytomy_decimal(PyObject *obj)
+   @param    use_unicode return Unicode
+ 
+   @return   Converted string
+-    @retval PyUnicode   if not BINARY_FLAG
++    @retval PyUnicode   if not binary charset
+     @retval PyBytes     Python v3 if not use_unicode
+     @retval PyString    Python v2 if not use_unicode
+     @retval NULL    Exception
+@@ -756,7 +756,7 @@ mytopy_string(const char *data, const un
+         return NULL;
+     }
+ 
+-    if (!(flags & BINARY_FLAG) && use_unicode && strcmp(charset, "binary") != 0)
++    if (use_unicode && strcmp(charset, "binary") != 0)
+     {
+         return PyUnicode_Decode(data, length, charset, NULL);
+     }

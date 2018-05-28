@@ -2,7 +2,8 @@
 # - c extension build is done in install phase (http://bugs.mysql.com/bug.php?id=78621)
 #
 # Conditional build:
-%bcond_with		tests		# build with tests (requires mysql server)
+%bcond_with	tests		# build with tests (requires mysql server)
+%bcond_without	python2		# build without python2
 %bcond_without	python3		# build without python3
 
 %define		pname	mysql-connector
@@ -11,20 +12,30 @@ Name:		python-%{pname}
 # check documentation to see which version is GA (we don't want devel releases)
 # https://dev.mysql.com/downloads/connector/python/
 Version:	8.0.11
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Libraries/Python
 Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}.zip
 # Source0-md5:	d47704b39d794b287d146c3d772ab896
 Patch0:		32bit.patch
+Patch1:		binary-bug-90585.patch
+Patch2:		tests.patch
 URL:		http://dev.mysql.com/doc/connector-python/en/
 BuildRequires:	mysql-devel
 BuildRequires:	protobuf-devel
+%if %{with python2}
 BuildRequires:	python-devel
 BuildRequires:	python-modules
-%{?with_python3:BuildRequires:	python3-modules}
+%endif
+%if %{with python3}
+BuildRequires:	python3-devel
+BuildRequires:	python3-modules
+%endif
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.710
+%if %{with tests}
+BuildRequires:	mysql
+%endif
 Requires:	python-modules
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -48,18 +59,38 @@ driver. An interface to the popular MySQL database server for Python.
 %prep
 %setup -q -n mysql-connector-python-%{version}
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 export MYSQLXPB_PROTOC=%{_bindir}/protoc
 export MYSQLXPB_PROTOBUF_INCLUDE_DIR=%{_includedir}
 export MYSQLXPB_PROTOBUF_LIB_DIR=%{_libdir}
 
+%if %{with python2}
 %py_build
-%{?with_tests:%{__python} setup.py test}
+%if %{with tests}
+export PYTHONPATH="$(pwd)/$(ls -1d build-2/lib*)"
+%{__python} unittests.py \
+	--verbosity 1 \
+	--keep --stats \
+	--skip-install \
+	--with-mysql=%{_prefix} \
+	--with-mysql-share=%{_datadir}/mysql
+%endif
+%endif
 
 %if %{with python3}
 %py3_build
-%{?with_tests:%{__python3} setup.py test}
+%if %{with tests}
+export PYTHONPATH="$(pwd)/$(ls -1d build-3/lib*)"
+%{__python3} unittests.py \
+	--verbosity 1 \
+	--keep --stats \
+	--skip-install \
+	--with-mysql=%{_prefix} \
+	--with-mysql-share=%{_datadir}/mysql
+%endif
 %endif
 
 %install
@@ -70,9 +101,11 @@ export MYSQLXPB_PROTOC=%{_bindir}/protoc
 export MYSQLXPB_PROTOBUF_INCLUDE_DIR=%{_includedir}
 export MYSQLXPB_PROTOBUF_LIB_DIR=%{_libdir}
 
+%if %{with python2}
 %py_install \
 	--with-mysql-capi=%{_prefix}
 %py_postclean
+%endif
 
 %if %{with python3}
 %py3_install \
@@ -82,6 +115,7 @@ export MYSQLXPB_PROTOBUF_LIB_DIR=%{_libdir}
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%if %{with python2}
 %files
 %defattr(644,root,root,755)
 %doc CHANGES.txt README.txt
@@ -108,6 +142,7 @@ rm -rf $RPM_BUILD_ROOT
 %{py_sitedir}/mysqlx/locales/eng/*.py[co]
 %if "%{py_ver}" > "2.4"
 %{py_sitedir}/mysql_connector_python-*.egg-info
+%endif
 %endif
 
 %if %{with python3}
