@@ -1,20 +1,161 @@
---- mysql-connector-python-8.0.11/src/mysql_capi_conversion.c~	2018-04-10 14:35:30.000000000 +0200
-+++ mysql-connector-python-8.0.11/src/mysql_capi_conversion.c	2018-05-28 08:13:02.693638891 +0200
-@@ -734,7 +734,7 @@ pytomy_decimal(PyObject *obj)
+From c2e034be79c1e4b21d1edaa31a324d200ebe76e6 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Arkadiusz=20Mi=C5=9Bkiewicz?= <arekm@maven.pl>
+Date: Mon, 28 May 2018 10:01:11 +0200
+Subject: [PATCH] Use charsetnr for detecting binary results in mytopy_string.
+
+Use returned field charsetnr attribute when doing mytopy_string conversion as documented
+in https://dev.mysql.com/doc/refman/5.7/en/c-api-data-structures.html
+
+Metadata on the other hand is always utf8 server side but server sends
+it as charsetnr 63 regardless of actual charset setting. Always use utf8
+for metadata as documented in https://dev.mysql.com/doc/refman/5.7/en/charset-metadata.html
+---
+ src/mysql_capi.c            | 27 ++++++++++++++++-----------
+ src/mysql_capi_conversion.c |  9 +++++----
+ 2 files changed, 21 insertions(+), 15 deletions(-)
+
+diff --git a/src/mysql_capi.c b/src/mysql_capi.c
+index c8839a8..e72bc3f 100644
+--- a/src/mysql_capi.c
++++ b/src/mysql_capi.c
+@@ -206,7 +206,7 @@ fetch_fields(MYSQL_RES *result, unsigned int num_fields, MY_CHARSET_INFO *cs,
+     PyObject *field= NULL;
+     PyObject *decoded= NULL;
+     MYSQL_FIELD *myfs;
+-    unsigned int i;
++    unsigned int i, metadata_charsetnr;
+     char *charset= python_characterset_name(cs->csname);
+ 
+     fields = PyList_New(0);
+@@ -220,37 +220,41 @@ fetch_fields(MYSQL_RES *result, unsigned int num_fields, MY_CHARSET_INFO *cs,
+     myfs = mysql_fetch_fields(result);
+     Py_END_ALLOW_THREADS
+ 
++    // https://dev.mysql.com/doc/refman/5.7/en/charset-metadata.html
++    // assume metadata is always utf8_bin
++    metadata_charsetnr = 83;
++
+     for (i = 0; i < num_fields; i++)
+     {
+         field = PyTuple_New(11);
+ 
+         decoded= mytopy_string(myfs[i].catalog, myfs[i].catalog_length,
+-                               myfs[i].flags, charset, use_unicode);
++                               metadata_charsetnr, charset, use_unicode);
+         if (NULL == decoded) return NULL; // decode error
+         PyTuple_SET_ITEM(field, 0, decoded);
+ 
+         decoded= mytopy_string(myfs[i].db, myfs[i].db_length,
+-                               myfs[i].flags, charset, use_unicode);
++                               metadata_charsetnr, charset, use_unicode);
+         if (NULL == decoded) return NULL; // decode error
+         PyTuple_SET_ITEM(field, 1, decoded);
+ 
+         decoded= mytopy_string(myfs[i].table, myfs[i].table_length,
+-                               myfs[i].flags, charset, use_unicode);
++                               metadata_charsetnr, charset, use_unicode);
+         if (NULL == decoded) return NULL; // decode error
+         PyTuple_SET_ITEM(field, 2, decoded);
+ 
+         decoded= mytopy_string(myfs[i].org_table, myfs[i].org_table_length,
+-                               myfs[i].flags, charset, use_unicode);
++                               metadata_charsetnr, charset, use_unicode);
+         if (NULL == decoded) return NULL; // decode error
+         PyTuple_SET_ITEM(field, 3, decoded);
+ 
+         decoded= mytopy_string(myfs[i].name, myfs[i].name_length,
+-                               myfs[i].flags, charset, use_unicode);
++                               metadata_charsetnr, charset, use_unicode);
+         if (NULL == decoded) return NULL; // decode error
+         PyTuple_SET_ITEM(field, 4, decoded);
+ 
+         decoded= mytopy_string(myfs[i].org_name, myfs[i].org_name_length,
+-                               myfs[i].flags, charset, use_unicode);
++                               metadata_charsetnr, charset, use_unicode);
+         if (NULL == decoded) return NULL; // decode error
+         PyTuple_SET_ITEM(field, 5, decoded);
+ 
+@@ -2316,7 +2320,7 @@ MySQL_fetch_row(MySQL *self)
+ 	unsigned long *field_lengths;
+ 	unsigned int num_fields;
+ 	unsigned int i;
+-	unsigned long field_type, field_flags;
++	unsigned long field_charsetnr, field_type, field_flags;
+ 	const char *charset= NULL;
+ 
+     CHECK_SESSION(self);
+@@ -2391,6 +2395,7 @@ MySQL_fetch_row(MySQL *self)
+             Py_RETURN_NONE;
+         }
+ 
++        field_charsetnr= PyLong_AsUnsignedLong(PyTuple_GetItem(field_info, 6));
+         field_type= PyLong_AsUnsignedLong(PyTuple_GetItem(field_info, 8));
+         field_flags= PyLong_AsUnsignedLong(PyTuple_GetItem(field_info, 9));
+ 
+@@ -2424,7 +2429,7 @@ MySQL_fetch_row(MySQL *self)
+                  field_type == MYSQL_TYPE_ENUM ||
+                  field_type == MYSQL_TYPE_VAR_STRING)
+         {
+-            value= mytopy_string(row[i], field_lengths[i], field_flags,
++            value= mytopy_string(row[i], field_lengths[i], field_charsetnr,
+                                   charset, self->use_unicode);
+             if (!value)
+             {
+@@ -2487,7 +2492,7 @@ MySQL_fetch_row(MySQL *self)
+         }
+         else if (field_type == MYSQL_TYPE_BLOB)
+         {
+-            value= mytopy_string(row[i], field_lengths[i], field_flags,
++            value= mytopy_string(row[i], field_lengths[i], field_charsetnr,
+                                   charset, self->use_unicode);
+             PyTuple_SET_ITEM(result_row, i, value);
+         }
+@@ -2500,7 +2505,7 @@ MySQL_fetch_row(MySQL *self)
+     	else
+     	{
+     	    // Do our best to convert whatever we got from MySQL to a str/bytes
+-            value = mytopy_string(row[i], field_lengths[i], field_flags,
++            value = mytopy_string(row[i], field_lengths[i], field_charsetnr,
+                                   charset, self->use_unicode);
+     		PyTuple_SET_ITEM(result_row, i, value);
+     	}
+diff --git a/src/mysql_capi_conversion.c b/src/mysql_capi_conversion.c
+index ecda11e..bd80072 100644
+--- a/src/mysql_capi_conversion.c
++++ b/src/mysql_capi_conversion.c
+@@ -729,19 +729,19 @@ pytomy_decimal(PyObject *obj)
+ 
+   @param    data        string to be converted
+   @param    length      length of data
+-  @param    flags       field flags
++  @param    charsetnr   field charsetnr
+   @param    charset     character used for decoding
    @param    use_unicode return Unicode
  
    @return   Converted string
 -    @retval PyUnicode   if not BINARY_FLAG
-+    @retval PyUnicode   if not binary charset
++    @retval PyUnicode   if not binary data
      @retval PyBytes     Python v3 if not use_unicode
      @retval PyString    Python v2 if not use_unicode
      @retval NULL    Exception
-@@ -756,7 +756,7 @@ mytopy_string(const char *data, const un
+  */
+ PyObject*
+ mytopy_string(const char *data, const unsigned long length,
+-              const unsigned long flags, const char *charset,
++              const unsigned long charsetnr, const char *charset,
+               unsigned int use_unicode)
+ {
+     if (!charset || !data) {
+@@ -756,7 +756,8 @@ mytopy_string(const char *data, const unsigned long length,
          return NULL;
      }
  
 -    if (!(flags & BINARY_FLAG) && use_unicode && strcmp(charset, "binary") != 0)
-+    if (use_unicode && strcmp(charset, "binary") != 0)
++    // 63 == binary: https://dev.mysql.com/doc/internals/en/charsets.html
++    if (charsetnr != 63 && use_unicode && strcmp(charset, "binary") != 0)
      {
          return PyUnicode_Decode(data, length, charset, NULL);
      }
+-- 
+2.17.0
+
