@@ -146,11 +146,11 @@ index ecda11e..bd80072 100644
                unsigned int use_unicode)
  {
      if (!charset || !data) {
-@@ -756,7 +756,8 @@ mytopy_string(const char *data, const unsigned long length,
+@@ -756,7 +756,8 @@ mytopy_string(const char *data, const un
          return NULL;
      }
  
--    if (!(flags & BINARY_FLAG) && use_unicode && strcmp(charset, "binary") != 0)
+-    if (!((flags != NULL) & flags & BINARY_FLAG) && use_unicode && strcmp(charset, "binary") != 0)
 +    // 63 == binary: https://dev.mysql.com/doc/internals/en/charsets.html
 +    if (charsetnr != 63 && use_unicode && strcmp(charset, "binary") != 0)
      {

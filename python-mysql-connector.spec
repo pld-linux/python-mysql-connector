@@ -11,12 +11,12 @@ Summary:	The MySQL Client/Protocol implemented in Python
 Name:		python-%{pname}
 # check documentation to see which version is GA (we don't want devel releases)
 # https://dev.mysql.com/downloads/connector/python/
-Version:	8.0.11
-Release:	4
+Version:	8.0.12
+Release:	1
 License:	GPL v2
 Group:		Libraries/Python
 Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}.zip
-# Source0-md5:	d47704b39d794b287d146c3d772ab896
+# Source0-md5:	356f20fd899837178f7719e54095d2ae
 Patch0:		32bit.patch
 Patch1:		binary-bug-90585.patch
 Patch2:		tests.patch
@@ -126,8 +126,6 @@ rm -rf $RPM_BUILD_ROOT
 %{py_sitedir}/mysql/connector/*.py[co]
 %dir %{py_sitedir}/mysql/connector/django
 %{py_sitedir}/mysql/connector/django/*.py[co]
-%dir %{py_sitedir}/mysql/connector/fabric
-%{py_sitedir}/mysql/connector/fabric/*.py[co]
 %dir %{py_sitedir}/mysql/connector/locales
 %{py_sitedir}/mysql/connector/locales/*.py[co]
 %dir %{py_sitedir}/mysql/connector/locales/eng
@@ -163,10 +161,6 @@ rm -rf $RPM_BUILD_ROOT
 %{py3_sitedir}/mysql/connector/django/*.py
 %dir %{py3_sitedir}/mysql/connector/django/__pycache__
 %{py3_sitedir}/mysql/connector/django/__pycache__/*.py[co]
-%dir %{py3_sitedir}/mysql/connector/fabric
-%{py3_sitedir}/mysql/connector/fabric/*.py
-%dir %{py3_sitedir}/mysql/connector/fabric/__pycache__
-%{py3_sitedir}/mysql/connector/fabric/__pycache__/*.py[co]
 %dir %{py3_sitedir}/mysql/connector/locales
 %{py3_sitedir}/mysql/connector/locales/*.py
 %dir %{py3_sitedir}/mysql/connector/locales/__pycache__

@@ -1,9 +1,10 @@
 --- mysql-connector-python-8.0.11/tests/mysqld.py~	2018-04-10 14:35:30.000000000 +0200
 +++ mysql-connector-python-8.0.11/tests/mysqld.py	2018-05-28 08:25:18.652587431 +0200
-@@ -185,24 +185,7 @@ class MySQLServerBase(object):
+@@ -184,35 +184,7 @@ class MySQLServerBase(object):
+         Raises MySQLBootstrapError when something fails.
          """
  
-         # Locate mysqld, mysql binaries
+-        # Locate mysqld, mysql binaries
 -        LOGGER.info("Locating mysql binaries (could take a while)")
 -        files_to_find = [EXEC_MYSQL, EXEC_MYSQLD]
 -        for root, dirs, files in os.walk(self._basedir):
@@ -13,11 +14,21 @@
 -                if (afile == EXEC_MYSQLD and
 -                        os.access(os.path.join(root, afile), 0)):
 -                    self._sbindir = root
--                    files_to_find.remove(EXEC_MYSQLD)
+-                    LOGGER.debug("Located {} in {}".format(
+-                        EXEC_MYSQLD, self._sbindir))
+-                    try:
+-                        files_to_find.remove(EXEC_MYSQLD)
+-                    except ValueError:
+-                            pass
 -                elif (afile == EXEC_MYSQL and
 -                        os.access(os.path.join(root, afile), 0)):
 -                    self._bindir = root
--                    files_to_find.remove(EXEC_MYSQL)
+-                    LOGGER.debug("Located {} in {}".format(
+-                        EXEC_MYSQL, self._bindir))
+-                    try:
+-                        files_to_find.remove(EXEC_MYSQLD)
+-                    except ValueError:
+-                            pass
 -
 -                if not files_to_find:
 -                    break
