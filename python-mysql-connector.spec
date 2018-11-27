@@ -12,14 +12,13 @@ Name:		python-%{pname}
 # check documentation to see which version is GA (we don't want devel releases)
 # https://dev.mysql.com/downloads/connector/python/
 Version:	8.0.13
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Libraries/Python
 Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}.zip
 # Source0-md5:	8c3073508160391c18d07663c7f03f87
 Patch0:		32bit.patch
-Patch1:		binary-bug-90585.patch
-Patch2:		tests.patch
+Patch1:		tests.patch
 URL:		http://dev.mysql.com/doc/connector-python/en/
 BuildRequires:	mysql-devel
 BuildRequires:	protobuf-devel
@@ -60,7 +59,6 @@ driver. An interface to the popular MySQL database server for Python.
 %setup -q -n mysql-connector-python-%{version}
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
 export MYSQLXPB_PROTOC=%{_bindir}/protoc
