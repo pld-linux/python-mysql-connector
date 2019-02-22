@@ -11,12 +11,12 @@ Summary:	The MySQL Client/Protocol implemented in Python
 Name:		python-%{pname}
 # check documentation to see which version is GA (we don't want devel releases)
 # https://dev.mysql.com/downloads/connector/python/
-Version:	8.0.13
-Release:	2
+Version:	8.0.15
+Release:	1
 License:	GPL v2
 Group:		Libraries/Python
 Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}.zip
-# Source0-md5:	8c3073508160391c18d07663c7f03f87
+# Source0-md5:	d8d385202f83d12a371593cbe00a60ba
 Patch0:		32bit.patch
 Patch1:		tests.patch
 URL:		http://dev.mysql.com/doc/connector-python/en/
