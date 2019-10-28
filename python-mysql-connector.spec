@@ -8,6 +8,7 @@
 
 %define		pname	mysql-connector
 Summary:	The MySQL Client/Protocol implemented in Python
+Summary(pl.UTF-8):	Protokół kliencki MySQL zaimplementowany w Pythonie
 Name:		python-%{pname}
 # check documentation to see which version is GA (we don't want devel releases)
 # https://dev.mysql.com/downloads/connector/python/
@@ -25,13 +26,15 @@ BuildRequires:	protobuf-devel
 %if %{with python2}
 BuildRequires:	python-devel
 BuildRequires:	python-modules
+BuildRequires:	python-setuptools
 %endif
 %if %{with python3}
 BuildRequires:	python3-devel
 BuildRequires:	python3-modules
+BuildRequires:	python3-setuptools
 %endif
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.710
+BuildRequires:	rpmbuild(macros) >= 1.714
 %if %{with tests}
 BuildRequires:	mysql
 %endif
@@ -42,10 +45,17 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 MySQL Connector/Python is implementing the MySQL Client/Server
 protocol completely in Python. No MySQL libraries are needed, and no
 compilation is necessary to run this Python DB API v2.0 compliant
-driver. An interface to the popular MySQL database server for Python.
+driver.
+
+%description -l pl.UTF-8
+MySQL Connector/Python to protokół klient-serwer MySQL-a
+zaimplementowany całkowicie w Pythonie. Do uruchomienia tego
+sterownika, zgodnego z DB API v2.0 Pythona, nie są potrzebne
+biblioteki MySQL-a, ani żadna kompilacja.
 
 %package -n python3-%{pname}
 Summary:	The MySQL Client/Protocol implemented in Python
+Summary(pl.UTF-8):	Protokół kliencki MySQL zaimplementowany w Pythonie
 Group:		Development/Languages/Python
 Requires:	python3-modules
 
@@ -53,7 +63,13 @@ Requires:	python3-modules
 MySQL Connector/Python is implementing the MySQL Client/Server
 protocol completely in Python. No MySQL libraries are needed, and no
 compilation is necessary to run this Python DB API v2.0 compliant
-driver. An interface to the popular MySQL database server for Python.
+driver.
+
+%description -n python3-%{pname} -l pl.UTF-8
+MySQL Connector/Python to protokół klient-serwer MySQL-a
+zaimplementowany całkowicie w Pythonie. Do uruchomienia tego
+sterownika, zgodnego z DB API v2.0 Pythona, nie są potrzebne
+biblioteki MySQL-a, ani żadna kompilacja.
 
 %prep
 %setup -q -n mysql-connector-python-%{version}
@@ -68,7 +84,7 @@ export MYSQLXPB_PROTOBUF_LIB_DIR=%{_libdir}
 %if %{with python2}
 %py_build
 %if %{with tests}
-export PYTHONPATH="$(pwd)/$(ls -1d build-2/lib*)"
+export PYTHONPATH="$(pwd)/$(echo build-2/lib*)"
 %{__python} unittests.py \
 	--verbosity 1 \
 	--keep --stats \
@@ -81,7 +97,7 @@ export PYTHONPATH="$(pwd)/$(ls -1d build-2/lib*)"
 %if %{with python3}
 %py3_build
 %if %{with tests}
-export PYTHONPATH="$(pwd)/$(ls -1d build-3/lib*)"
+export PYTHONPATH="$(pwd)/$(echo build-3/lib*)"
 %{__python3} unittests.py \
 	--verbosity 1 \
 	--keep --stats \
