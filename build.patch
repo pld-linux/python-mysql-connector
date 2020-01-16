@@ -1,0 +1,16 @@
+--- mysql-connector-python-8.0.19/src/mysql_capi.c.org	2020-01-16 09:45:08.669095486 +0100
++++ mysql-connector-python-8.0.19/src/mysql_capi.c	2020-01-16 09:47:23.166612870 +0100
+@@ -1224,11 +1224,13 @@ MySQL_connect(MySQL *self, PyObject *arg
+             mysql_options(&self->session,
+                          MYSQL_OPT_SSL_CIPHER, ssl_cipher_suites);
+         }
++#if MYSQL_VERSION_ID >= 80016
+         if (tls_cipher_suites != NULL)
+         {
+             mysql_options(&self->session,
+                           MYSQL_OPT_TLS_CIPHERSUITES, tls_cipher_suites);
+         }
++#endif
+     } else {
+         // Make sure to not enforce SSL
+ #if MYSQL_VERSION_ID > 50703 && MYSQL_VERSION_ID < 50711

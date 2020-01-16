@@ -12,14 +12,15 @@ Summary(pl.UTF-8):	Protokół kliencki MySQL zaimplementowany w Pythonie
 Name:		python-%{pname}
 # check documentation to see which version is GA (we don't want devel releases)
 # https://dev.mysql.com/downloads/connector/python/
-Version:	8.0.18
-Release:	2
+Version:	8.0.19
+Release:	1
 License:	GPL v2
 Group:		Libraries/Python
 Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}.zip
-# Source0-md5:	e9c473418b52bcae9687dddb0b69369f
+# Source0-md5:	451d6604efa9dcab56d2658e7167898e
 Patch0:		32bit.patch
 Patch1:		tests.patch
+Patch2:		build.patch
 URL:		http://dev.mysql.com/doc/connector-python/en/
 BuildRequires:	mysql-devel
 BuildRequires:	protobuf-devel
@@ -75,6 +76,7 @@ biblioteki MySQL-a, ani żadna kompilacja.
 %setup -q -n mysql-connector-python-%{version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 export MYSQLXPB_PROTOC=%{_bindir}/protoc
