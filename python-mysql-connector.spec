@@ -12,13 +12,14 @@ Summary(pl.UTF-8):	Protokół kliencki MySQL zaimplementowany w Pythonie
 Name:		python-%{pname}
 # check documentation to see which version is GA (we don't want devel releases)
 # https://dev.mysql.com/downloads/connector/python/
-Version:	8.0.21
-Release:	6
+Version:	8.0.23
+Release:	1
 License:	GPL v2
 Group:		Libraries/Python
-Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}.zip
-# Source0-md5:	2ae30416c0a35673e4de08e79f6bde15
-Patch0:		32bit.patch
+# Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}-src.tar.gz
+Source0:	https://pypi.debian.net/mysql-connector-python/mysql-connector-python-%{version}.tar.gz
+# Source0-md5:	798f57c5e577a34787342821a0cb3a87
+Patch0:		force-capi.patch
 Patch1:		tests.patch
 Patch2:		build.patch
 URL:		http://dev.mysql.com/doc/connector-python/en/

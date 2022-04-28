@@ -1,0 +1,20 @@
+--- mysql-connector-python-8.0.23/cpydist/__init__.py~	2020-12-16 07:04:09.000000000 +0100
++++ mysql-connector-python-8.0.23/cpydist/__init__.py	2022-04-28 14:15:47.843105028 +0200
+@@ -107,7 +107,7 @@ class BaseCommand(Command):
+     user_options = COMMON_USER_OPTIONS + CEXT_OPTIONS
+     boolean_options = ["debug", "byte_code_only", "keep-temp"]
+ 
+-    with_mysql_capi = None
++    with_mysql_capi = "/usr"
+     with_mysqlxpb_cext = False
+ 
+     with_openssl_include_dir = None
+@@ -135,7 +135,7 @@ class BaseCommand(Command):
+ 
+     def initialize_options(self):
+         """Initialize the options."""
+-        self.with_mysql_capi = None
++        self.with_mysql_capi = "/usr"
+         self.with_mysqlxpb_cext = False
+         self.with_openssl_include_dir = None
+         self.with_openssl_lib_dir = None

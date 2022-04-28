@@ -14,3 +14,53 @@
      } else {
          // Make sure to not enforce SSL
  #if MYSQL_VERSION_ID > 50703 && MYSQL_VERSION_ID < 50711
+--- mysql-connector-python-8.0.23/src/mysql_capi.c~	2022-04-28 15:35:47.000000000 +0200
++++ mysql-connector-python-8.0.23/src/mysql_capi.c	2022-04-28 15:38:01.363105540 +0200
+@@ -1040,6 +1040,7 @@ MySQL_set_character_set(MySQL *self, PyO
+   @return   int
+     @retval 0   Zero for success.
+ */
++#if MYSQL_VERSION_ID >= 80021
+ PyObject*
+ MySQL_set_load_data_local_infile_option(MySQL *self, PyObject *args)
+ {
+@@ -1067,6 +1068,7 @@ MySQL_set_load_data_local_infile_option(
+ 
+     Py_RETURN_NONE;
+ }
++#endif
+ 
+ /**
+   Commit the current transaction.
+--- mysql-connector-python-8.0.23/src/mysql_connector.c~	2020-12-16 07:04:09.000000000 +0100
++++ mysql-connector-python-8.0.23/src/mysql_connector.c	2022-04-28 15:38:28.053105544 +0200
+@@ -217,9 +217,11 @@ static PyMethodDef MySQL_methods[]=
+     {"set_character_set", (PyCFunction)MySQL_set_character_set,
+      METH_VARARGS,
+      "Set the default character set for the current connection"},
++#if MYSQL_VERSION_ID >= 80021
+     {"set_load_data_local_infile_option",
+      (PyCFunction)MySQL_set_load_data_local_infile_option, METH_VARARGS,
+      "Set the load_data_local_infile_option for the current connection"},
++#endif
+     {"shutdown", (PyCFunction)MySQL_shutdown,
+      METH_VARARGS,
+      "Ask MySQL server to shut down"},
+--- mysql-connector-python-8.0.23/src/mysql_capi.c~	2022-04-28 15:39:05.000000000 +0200
++++ mysql-connector-python-8.0.23/src/mysql_capi.c	2022-04-28 15:39:52.313105545 +0200
+@@ -1204,13 +1204,13 @@ MySQL_connect(MySQL *self, PyObject *arg
+ 	if (local_infile == 1) {
+ 		unsigned int accept= 1;
+ 		mysql_options(&self->session, MYSQL_OPT_LOCAL_INFILE, &accept);
+-
++#if MYSQL_VERSION_ID >= 80021
+ 	} else if (local_infile == 0 && load_data_local_dir != NULL) {
+ 		if (load_data_local_dir != NULL){
+ 			mysql_options(&self->session, MYSQL_OPT_LOAD_DATA_LOCAL_DIR,
+                           load_data_local_dir);
+ 		}
+-
++#endif
+ 	} else {
+ 		unsigned int denied= 0;
+ 		mysql_options(&self->session, MYSQL_OPT_LOCAL_INFILE, &denied);
