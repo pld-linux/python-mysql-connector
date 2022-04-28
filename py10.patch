@@ -1,0 +1,60 @@
+commit 72cd03112f6ba581a0c16cda40490154b661460c
+Author: Nuno Mariz <nuno.mariz@oracle.com>
+Date:   Wed Sep 29 15:43:13 2021 +0100
+
+    WL#14813: Add support for Python 3.10
+
+diff --git a/src/mysql_capi.c b/src/mysql_capi.c
+index 0c1c6c0..b196488 100644
+--- a/src/mysql_capi.c
++++ b/src/mysql_capi.c
+@@ -28,6 +28,8 @@
+  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA
+  */
+ 
++#define PY_SSIZE_T_CLEAN 1
++
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <time.h>
+@@ -2116,7 +2116,8 @@ PyObject*
+ MySQL_query(MySQL *self, PyObject *args, PyObject *kwds)
+ {
+ 	PyObject *buffered= NULL, *raw= NULL, *raw_as_string= NULL;
+-	int res= 0, stmt_length;
++	int res= 0;
++	Py_ssize_t stmt_length;
+ 	char *stmt= NULL;
+ 	static char *kwlist[]=
+ 	{
+diff --git a/src/mysqlxpb/mysqlxpb.cc b/src/mysqlxpb/mysqlxpb.cc
+index 30cdcc8..c2b37e7 100644
+--- a/src/mysqlxpb/mysqlxpb.cc
++++ b/src/mysqlxpb/mysqlxpb.cc
+@@ -28,6 +28,8 @@
+  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA
+  */
+ 
++#define PY_SSIZE_T_CLEAN 1
++
+ #include "python_cast.h"
+ #include "python.h"
+ #include "mysqlx/mysqlx.pb.h"
+@@ -791,7 +793,7 @@ static PyObject* ParseMessage(PyObject* self, PyObject* args) {
+   PyObject* result = NULL;
+   const char* type_name;
+   const char* data;
+-  int data_size;
++  Py_ssize_t data_size;
+ 
+   if (PyArg_ParseTuple(args, "ss#", &type_name, &data, &data_size))
+     result = ParseMessageImpl(type_name, data, data_size);
+@@ -849,7 +851,7 @@ static PyObject* ParseServerMessage(PyObject* self, PyObject* args) {
+   PyObject* result = NULL;
+   int type;
+   const char* message_data;
+-  int message_data_size;
++  Py_ssize_t message_data_size;
+ 
+   if (PyArg_ParseTuple(args, "is#", &type, &message_data, &message_data_size))
+   {

@@ -13,7 +13,7 @@ Name:		python-%{pname}
 # check documentation to see which version is GA (we don't want devel releases)
 # https://dev.mysql.com/downloads/connector/python/
 Version:	8.0.23
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Libraries/Python
 # Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}-src.tar.gz
@@ -22,6 +22,7 @@ Source0:	https://pypi.debian.net/mysql-connector-python/mysql-connector-python-%
 Patch0:		force-capi.patch
 Patch1:		tests.patch
 Patch2:		build.patch
+Patch3:		py10.patch
 URL:		http://dev.mysql.com/doc/connector-python/en/
 BuildRequires:	mysql-devel
 BuildRequires:	protobuf-devel >= 3.0.0
@@ -78,6 +79,7 @@ biblioteki MySQL-a, ani żadna kompilacja.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 export MYSQLXPB_PROTOC=%{_bindir}/protoc
