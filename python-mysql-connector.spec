@@ -10,6 +10,7 @@ Summary(pl.UTF-8):	Protokół kliencki MySQL zaimplementowany w Pythonie
 Name:		python-%{pname}
 # check documentation to see which version is GA (we don't want devel releases)
 # https://dev.mysql.com/downloads/connector/python/
+# python3 version in python3-mysql-connector.spec
 Version:	8.0.23
 Release:	2
 License:	GPL v2
