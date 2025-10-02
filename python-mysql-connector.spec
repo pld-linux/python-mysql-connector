@@ -12,7 +12,7 @@ Name:		python-%{pname}
 # https://dev.mysql.com/downloads/connector/python/
 # python3 version in python3-mysql-connector.spec
 Version:	8.0.23
-Release:	2
+Release:	3
 License:	GPL v2
 Group:		Libraries/Python
 # Source0:	http://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-%{version}-src.tar.gz
